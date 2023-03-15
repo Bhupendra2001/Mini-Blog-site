@@ -12,7 +12,7 @@ const createdAuthor = async function(req, res){
        
         let { fname , lname , title , email, password } = data
         if(!fname || !lname || !title || !email || !password){
-        return res.status(400).send({ status : "false" , message : "All field are mandatory"})
+        return res.status(400).send({ status : "false" , message : " fname , lname , title , email & password All field are mandatory"})
         }
         if(!validName(fname)){
         return res.status(400).send({status : "false", message : "first name must be in alphabet"})
@@ -30,6 +30,9 @@ const createdAuthor = async function(req, res){
           return res.status(400).send({status : "false", message : "provide a valid password"})
         }
         
+        let uniqueEmail = await authorModel.findOne({email})
+        if(uniqueEmail) return res.status(400).send( {status : false ,message : "email should be unique"})
+
         const result = await authorModel.create(data)
         return res.status(201).send({ status : true , msg : "data created successfully",data : result})
         }
@@ -45,13 +48,13 @@ const login=async function(req,res)
         const password=req.body.password
         let author=await authorModel.findOne({email:email, password:password})
         if(!author){
-        res.status(404).send({status : false , message: "invalid email or password"})
+        return   res.status(404).send({status : false , message: "invalid email or password"})
         }
-        let authorId=author._id.toString()
+        let authorId=author._id
         let token =jwt.sign({
         authorId : authorId   
         },"project-1_group-13")
-        res.status(201).send({status: true ,Token: token})
+        return  res.status(201).send({status: true ,Token: token})
       }catch(err)
       {
         return res.status(500).send({ status : false , msg : err.message})

@@ -11,32 +11,28 @@ const createdBlog = async function (req, res)
         try{
         const data = req.body
         const { title, body, authorId, category } = data
-        if(Object.keys(data).length == 0){
-        return res.status(400).send({ status: false, msg: "All fields are mandatory" })
-        }
-        if(!title || !body || !authorId || !category) {
-        return res.status(400).send({ status: false, msg: "All fields are mandatory" })
-        }
-        if(!validName(title)){
-        return res.status(400).send({ status: false, msg: "title should be string type only" })
-        }
-        if(!validName(category)){
-        return res.status(400).send({ status: false, msg: "category should be string type only" })
-        }
-        if(!validName(body)) {
-        return res.status(400).send({ status: false, msg: "body should be string type only" })
-        }
-        if(!isvalidObjectid(authorId)){
-        return res.status(404).send({ status: false, msg: "provide a valid author id" })
-        }
+        if(Object.keys(data).length == 0)  return res.status(400).send({ status: false, msg: "body should not be empty" })
+        
+        if(!title ) return res.status(400).send({ status: false, msg: " title should  be mandatory" })
+        if(!body) return res.status(400).send({ status: false, msg: " body should  be mandatory" })
+        if(!authorId) return res.status(400).send({ status: false, msg: " authorId should  be mandatory" })
+        if(!category) return res.status(400).send({ status: false, msg: " category should  be mandatory" })
 
-
+        if(!validName(title)) return res.status(400).send({ status: false, msg: "title should be string type only" })
+        
+        if(!validName(category)) return res.status(400).send({ status: false, msg: "category should be string type only" })
+        
+        if(!validName(body))  return res.status(400).send({ status: false, msg: "body should be string type only" })
+        
+        if(!isvalidObjectid(authorId))  return res.status(404).send({ status: false, msg: "provide a valid author id" })
+        
         let checkauthorId = await authorModel.findById(authorId)
-        if(!checkauthorId){
-        return res.status(404).send({ status: false, msg: " author not found " })
-        }
+        if(!checkauthorId) return res.status(404).send({ status: false, msg: " author not found " })
+        
+
         let blogData = await blogModel.create(data)
         return res.status(201).send({ status: true, msg: "Blog has been created successfully", data: blogData })
+
         }
         catch (err){
         return res.status(500).send({ status: false, msg: err.message })
@@ -46,21 +42,21 @@ const createdBlog = async function (req, res)
 
 
 
+
+
 const getBlogs = async function (req, res) {
-
-
         try {
             let { authorId, category, tags, subcategory } = req.query;
             let filter = { isDeleted: false, ispublished: true }
+
             if (authorId) { filter.authorId = authorId }
+
+
             if (req.query.authorId) {
             if (!isvalidObjectid(req.query.authorId)) {
             return res.status(400).send({ status: false, mas: "Please enter valid Author Id" })
-            } else {
-            req.query.authorId = authorId
+            } 
             }
-            }
-
 
             if (category) { filter.category = category }
             if(tags) {
@@ -69,17 +65,14 @@ const getBlogs = async function (req, res) {
             }
             filter.tags={ $all: tags.trim().split(',').map(ele=>ele.trim())}
             }
+            
 
-
-         
            if (subcategory) {
            if(subcategory.trim().length == 0)
            return res.status(400).send({Status:false, Msg:"Dont left the subCategory query empty"}) 
            filter.subcategory =  { $all: subcategory.trim().split(',').map(ele=>ele.trim())}
            }
             
-        
-
             let blogdata = await blogModel.find(filter)
             if (blogdata.length == 0) {
             return res.status(400).send({ status: false, msg: "No such blogs found" })

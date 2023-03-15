@@ -1,6 +1,5 @@
 const mongoose = require("mongoose")
 
-
 // validation  of name 
 const validName = (name) =>
 {
@@ -8,6 +7,8 @@ const validName = (name) =>
     /^[a-zA-Z0-9\s]+$/
     return nameRegex.test(name)
 } 
+
+
 // validation of email 
 const isValidEmail = (email) =>
 {
@@ -22,6 +23,8 @@ const isvalidObjectid = (objectId) =>
 {
     return mongoose.Types.ObjectId.isValid(objectId)
 }
+
+
 // validation for  title
 const isValidTitle = (title) =>
 {
@@ -29,10 +32,14 @@ const isValidTitle = (title) =>
     [ "Mr", "Mrs", "Miss" ]
     return arr.includes(title)   
 }
+
+ 
  // validation for  password
 const isValidPassword = (password)=> {
     const pass = /^[a-zA-Z0-9]+$/
     return pass.test(password)
 }
+
+
 
 module.exports = { validName, isValidEmail , isvalidObjectid , isValidTitle, isValidPassword}
