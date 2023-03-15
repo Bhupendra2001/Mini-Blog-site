@@ -1,19 +1,21 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const route = require('./routes/route')
+require('dotenv').config()
+
 const {default : mongoose } = require('mongoose');
 const blog = express()
 blog.use(bodyParser.json())   
 
-
-
+const PORT = process.env.PORT
+const URL = process.env.MongoURL
 mongoose.connect(
-"mongodb+srv://bhupendra_:1B97GiRnjBfdXTL4@cluster5.fjlkdvr.mongodb.net/project-1" ,{  useNewUrlParser: true  }
+URL ,{  useNewUrlParser: true  }
 ).then(() => console.log( "MongoDb is connected" ) ).catch( err => console.log(err) )
 
 
 blog.use('/', route)
 
-blog.listen( 3000, function(){
-console.log('Express app running on port ' + (3000))
+blog.listen( PORT, function(){
+console.log('Express app running on port ' + (PORT))
 })

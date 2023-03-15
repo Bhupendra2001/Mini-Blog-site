@@ -1,9 +1,10 @@
 const blogsModel = require("../Models/BlogModel")
 const jwt = require('jsonwebtoken')
 const {  isvalidObjectid } = require("../validation/validations")
+require('dotenv').config()
+const keys = process.env.Auth_key
 
-
-const authentication=function(req,res,next)
+const authentication=  function(req,res,next)
 {
     try{
 
@@ -11,7 +12,7 @@ const authentication=function(req,res,next)
     let token = req.headers["x-api-key"]
     if (!token) 
     return res.status(400).send({ status: false, msg: "Token must be present" })
-    let decodedToken = jwt.verify(token, "project-1_group-13")
+    let decodedToken = jwt.verify(token, keys)
     if(!decodedToken) 
     return res.status(401).send({ status: false, msg: "Token is invalid" })
     req.token = decodedToken

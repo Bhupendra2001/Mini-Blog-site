@@ -2,8 +2,10 @@
 const authorModel = require("../Models/AuthorModel")
 const jwt  = require("jsonwebtoken")
 const validation = require("../validation/validations")
-let {   validName ,  isValidEmail ,  isValidTitle , isValidPassword  } = validation
+require('dotenv').config()
+const keys = process.env.Auth_key
 
+let {   validName ,  isValidEmail ,  isValidTitle , isValidPassword  } = validation
 
 
 const createdAuthor = async function(req, res){
@@ -53,7 +55,7 @@ const login=async function(req,res)
         let authorId=author._id
         let token =jwt.sign({
         authorId : authorId   
-        },"project-1_group-13")
+        },keys)
         return  res.status(201).send({status: true ,Token: token})
       }catch(err)
       {
